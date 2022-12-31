@@ -1,9 +1,9 @@
 # BASE IT ON READ_BIOMASS
-
 from scipy.io import FortranFile
 import numpy as np
 from itertools import islice
 
+files_dir='/Users/rocio/Dropbox/ECOSMO/ecosmosourcefiles/'
 
 # FORTRAN USES 1-INDEXING!!!
 m=177
@@ -20,13 +20,15 @@ kasor=8106
 
 
 # Read the grid info
-g = FortranFile( '/Users/rpr061/Documents/gridinfo', 'r' )
-g1=g.read_reals(dtype='int16') # Have to check the type!
+g = FortranFile( files_dir+'gridinfo', 'r' )
+gridinfo_dtype='int32'
+# CHECKEAR EL TIPO!!
+g1=g.read_reals(dtype=gridinfo_dtype) # Have to check the type!
 dt=g1[0]; mm=g1[1]; nn=g1[2]; ilon=g1[3]
-g2=g.read_reals(dtype='int16')
+g2=g.read_reals(dtype=gridinfo_dtype)
 seclist=[ilo,1,1,khor1,khor,khor,n,n]
 dz,nhor,ntot,iwet,ldep,lazc,indend,islab,*rest= np.split(g2, np.cumsum(seclist))
-g3=g.read_reals(dtype='int16')
+g3=g.read_reals(dtype=gridinfo_dtype)
 seclist=[1,m,m,m]
 dlr,rdln,dlvo,dlvu,*rest= np.split(g3, np.cumsum(seclist))
 
@@ -34,26 +36,24 @@ dlr,rdln,dlvo,dlvu,*rest= np.split(g3, np.cumsum(seclist))
 #print(g2.shape)
 #print(g3.shape)
 
-common / ind /
-isornr(n), isorsr(n)
-common / vecind / indwet(khor), indver(ndrei), lb(n), le(n),
-indi(ndrei), irbsor(kasor, 2, 2), nrbsor(2, 2), jwet(khor),
-llw(ndrei)
+#common / ind /
+#isornr(n), isorsr(n)
+#common / vecind / indwet(khor), indver(ndrei), lb(n), le(n),
+#indi(ndrei), irbsor(kasor, 2, 2), nrbsor(2, 2), jwet(khor),
+#llw(ndrei)
 
-
----
 
 # Read the file; iwet points per line, each new line is a day
-f = FortranFile( '/Users/rpr061/Documents/NN09401b', 'r' )
+f = FortranFile( files_dir+'NN09401b', 'r' )
 fdata=f.read_reals(dtype='float32')
 
 # Turn 1D into 3D
-u(m, n, ilo, nday)
+#u(m, n, ilo, nday)
 #ucomp(ntot)
 
 
 # Preallocate
-u=np.empty(m,n,ilo)
+u=np.empty([m,n,ilo])
 u[:]=np.nan
 
 lwe = -1
