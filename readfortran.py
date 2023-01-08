@@ -72,6 +72,7 @@ nwet = -1 # nwet = total number of wet points. In 3d. Counter, locator in fdata
 #            u[i, j, k] = fdata[nwet] -1
 
 
+
 for j in range(0,5):#n-1):
     lwa = lwe + 1
     lwe = indend[j] - 1 # indend is cumulative
